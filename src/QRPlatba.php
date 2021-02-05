@@ -52,42 +52,24 @@ class QRPlatba
      * @var array
      */
     private $keys = [
-        'ACC' => null,
-        // Max. 46 - znaků IBAN, BIC Identifikace protistrany !povinny
-        'ALT-ACC' => null,
-        // Max. 93 - znaků Seznam alternativnich uctu. odddeleny carkou,
-        'AM' => null,
-        //Max. 10 znaků - Desetinné číslo Výše částky platby.
-        'CC' => 'CZK',
-        // Právě 3 znaky - Měna platby.
-        'DT' => null,
-        // Právě 8 znaků - Datum splatnosti YYYYMMDD.
-        'MSG' => null,
-        // Max. 60 znaků - Zpráva pro příjemce.
-        'X-VS' => null,
-        // Max. 10 znaků - Celé číslo - Variabilní symbol
-        'X-SS' => null,
-        // Max. 10 znaků - Celé číslo - Specifický symbol
-        'X-KS' => null,
-        // Max. 10 znaků - Celé číslo - Konstantní symbol
-        'RF' => null,
-        // Max. 16 znaků - Identifikátor platby pro příjemce.
-        'RN' => null,
-        // Max. 35 znaků - Jméno příjemce.
-        'PT' => null,
-        // Právě 3 znaky - Typ platby.
-        'CRC32' => null,
-        // Právě 8 znaků - Kontrolní součet - HEX.
-        'NT' => null,
-        // Právě 1 znak P|E - Identifikace kanálu pro zaslání notifikace výstavci platby.
-        'NTA' => null,
-        //Max. 320 znaků - Telefonní číslo v mezinárodním nebo lokálním vyjádření nebo E-mailová adresa
-        'X-PER' => null,
-        // Max. 2 znaky -  Celé číslo - Počet dní, po které se má provádět pokus o opětovné provedení neúspěšné platby
-        'X-ID' => null,
-        // Max. 20 znaků. -  Identifikátor platby na straně příkazce. Jedná se o interní ID, jehož použití a interpretace závisí na bance příkazce.
-        'X-URL' => null,
-        // Max. 140 znaků. -  URL, které je možno využít pro vlastní potřebu
+        'ACC' => null, // Max. 46 - znaků IBAN, BIC Identifikace protistrany !povinny
+        'ALT-ACC' => null, // Max. 93 - znaků Seznam alternativnich uctu. odddeleny carkou,
+        'AM' => null, //Max. 10 znaků - Desetinné číslo Výše částky platby.
+        'CC' => 'CZK', // Právě 3 znaky - Měna platby.
+        'DT' => null, // Právě 8 znaků - Datum splatnosti YYYYMMDD.
+        'MSG' => null, // Max. 60 znaků - Zpráva pro příjemce.
+        'X-VS' => null, // Max. 10 znaků - Celé číslo - Variabilní symbol
+        'X-SS' => null, // Max. 10 znaků - Celé číslo - Specifický symbol
+        'X-KS' => null, // Max. 10 znaků - Celé číslo - Konstantní symbol
+        'RF' => null, // Max. 16 znaků - Identifikátor platby pro příjemce.
+        'RN' => null, // Max. 35 znaků - Jméno příjemce.
+        'PT' => null, // Právě 3 znaky - Typ platby.
+        'CRC32' => null, // Právě 8 znaků - Kontrolní součet - HEX.
+        'NT' => null, // Právě 1 znak P|E - Identifikace kanálu pro zaslání notifikace výstavci platby.
+        'NTA' => null, //Max. 320 znaků - Telefonní číslo v mezinárodním nebo lokálním vyjádření nebo E-mailová adresa
+        'X-PER' => null, // Max. 2 znaky -  Celé číslo - Počet dní, po které se má provádět pokus o opětovné provedení neúspěšné platby
+        'X-ID' => null, // Max. 20 znaků. -  Identifikátor platby na straně příkazce. Jedná se o interní ID, jehož použití a interpretace závisí na bance příkazce.
+        'X-URL' => null, // Max. 140 znaků. -  URL, které je možno využít pro vlastní potřebu
     ];
 
     /**
@@ -125,7 +107,7 @@ class QRPlatba
      * @return QRPlatba
      * @throws \InvalidArgumentException
      */
-    public static function create($account = null, $amount = null, $variable = null)
+    public static function create($account = null, $amount = null, $variable = null): self
     {
         return new self($account, $amount, $variable);
     }
@@ -137,7 +119,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setAccount($account)
+    public function setAccount($account): self
     {
         $this->keys['ACC'] = self::accountToIban($account);
 
@@ -151,7 +133,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setAmount($amount)
+    public function setAmount($amount): self
     {
         $this->keys['AM'] = sprintf('%.2f', $amount);
 
@@ -165,7 +147,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setVariableSymbol($vs)
+    public function setVariableSymbol($vs): self
     {
         $this->keys['X-VS'] = $vs;
 
@@ -179,7 +161,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setConstantSymbol($cs)
+    public function setConstantSymbol($cs): self
     {
         $this->keys['X-CS'] = $cs;
 
@@ -195,7 +177,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setSpecificSymbol($ss)
+    public function setSpecificSymbol($ss): self
     {
         if (mb_strlen($ss) > 10) {
             throw new QRPlatbaException('Specific symbol is higher than 10 chars');
@@ -212,7 +194,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setMessage($msg)
+    public function setMessage($msg): self
     {
         $this->keys['MSG'] = mb_substr($this->stripDiacritics($msg), 0, 60);
 
@@ -226,7 +208,7 @@ class QRPlatba
 	 *
 	 * @return $this
 	 */
-	public function setRecipientName($name)
+	public function setRecipientName($name): self
 	{
 		$this->keys['RN'] = mb_substr($this->stripDiacritics($name), 0, 35);
 
@@ -240,7 +222,7 @@ class QRPlatba
      *
      * @return $this
      */
-    public function setDueDate(\DateTime $date)
+    public function setDueDate(\DateTime $date): self
     {
         $this->keys['DT'] = $date->format('Ymd');
 
@@ -253,7 +235,7 @@ class QRPlatba
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setCurrency($cc)
+    public function setCurrency($cc): self
     {
         if (!in_array($cc, self::$currencies, true)) {
             throw new \InvalidArgumentException(sprintf('Currency %s is not supported.', $cc));
@@ -269,7 +251,7 @@ class QRPlatba
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $chunks = ['SPD', self::VERSION];
         foreach ($this->keys as $key => $value) {
@@ -290,7 +272,7 @@ class QRPlatba
      *
      * @return string
      */
-    public function getQRCodeImage($htmlTag = true, $size = 300)
+    public function getQRCodeImage($htmlTag = true, $size = 300): string
     {
         $qrCode = $this->getQRCodeInstance($size);
         $data = $qrCode->writeDataUri();
@@ -310,7 +292,7 @@ class QRPlatba
      * @return QRPlatba
      * @throws \Endroid\QrCode\Exception\UnsupportedExtensionException
      */
-    public function saveQRCodeImage($filename = null, $format = 'png', $size = 300)
+    public function saveQRCodeImage($filename = null, $format = 'png', $size = 300): self
     {
         $qrCode = $this->getQRCodeInstance($size);
         $qrCode->setWriterByExtension($format);
@@ -326,14 +308,13 @@ class QRPlatba
      *
      * @return QrCode
      */
-    public function getQRCodeInstance($size = 300)
+    public function getQRCodeInstance($size = 300): QrCode
     {
         $qrCode = new QrCode();
-        $qrCode
-            ->setText((string) $this)
-            ->setSize($size)
-            ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0, 'a' => 0])
-            ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255, 'a' => 0]);
+        $qrCode->setText((string) $this);
+        $qrCode->setSize($size);
+        $qrCode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0, 'a' => 0]);
+        $qrCode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255, 'a' => 0]);
 
         return $qrCode;
     }
@@ -345,7 +326,7 @@ class QRPlatba
      *
      * @return string
      */
-    public static function accountToIban($accountNumber)
+    public static function accountToIban($accountNumber): string
     {
         $accountNumber = explode('/', $accountNumber);
         $bank = $accountNumber[1];
